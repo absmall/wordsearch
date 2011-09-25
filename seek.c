@@ -4,7 +4,7 @@
 #include "wordsearch.h"
 #include "position.h"
 
-static bool check_word( word_search_t *ws, char *word, position_t *position )
+static bool check_word( word_search_t *ws, wchar_t *word, position_t *position )
 {
 	char c;
 	void *index;
@@ -12,7 +12,7 @@ static bool check_word( word_search_t *ws, char *word, position_t *position )
 	int last_pos;
 	int offset;
 
-	length = strlen(word);
+	length = wcslen(word);
 
 	// Make sure the word fits at all. See if the last letter is on the grid
 	for( i = 0; i < ws->num_dimensions; i ++ ) {
@@ -27,7 +27,7 @@ static bool check_word( word_search_t *ws, char *word, position_t *position )
 		for( j = 0; j < ws->num_dimensions - 1; j ++ ) {
 			index = ((void **)index)[ position->pos[ j ] + i * position_dimension_direction( position, j )];
 		}
-		c = ((char *)index)[ position->pos[ j ] + i * position_dimension_direction( position, j )];
+		c = ((wchar_t *)index)[ position->pos[ j ] + i * position_dimension_direction( position, j )];
 
 		if( c != word[i] ) {
 			return false;
@@ -47,7 +47,7 @@ void wordsearch_solve(word_search_t *ws)
 	for( i = 0; i < ws->word_count; i ++ ) {
 		do {
 			if( check_word( ws, ws->words[i], &pos ) ) {
-				printf("Found '%s' at (");
+				printf("Found '%ls' at (");
 				for(j = 0; j < ws->num_dimensions - 1; j ++ ) {
 					printf("%d,", pos.pos[ j ] );
 				}

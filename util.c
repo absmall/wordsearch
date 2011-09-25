@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <stdlib.h>
 #include "wordsearch.h"
 
 static void display_dimension( void *letters, int dimension, int *dims )
@@ -6,10 +7,10 @@ static void display_dimension( void *letters, int dimension, int *dims )
 	int i;
 
 	if( dimension == 1 ) {
-		char *c = (char *)letters;
+		wchar_t *c = (wchar_t *)letters;
 		printf("\t|");
 		for( i = 0; i < *dims; i ++ ) {
-			printf("%c", c[i]);
+			printf("%lc", c[i]);
 		}
 		printf("|\n");
 	} else if( dimension == 2 ) {

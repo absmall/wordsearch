@@ -1,4 +1,5 @@
 #include <stdbool.h>
+#include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
 #include "wordsearch.h"
@@ -8,9 +9,9 @@ static void letters_alloc(void **letters, int dimensions, int *maxes)
 {
 	int i;
 	if( dimensions == 1 ) {
-		*letters = malloc( sizeof(char) * *maxes );
+		*letters = malloc( sizeof(wchar_t) * *maxes );
 		for( i = 0; i < *maxes; i ++ ) {
-			((char *)*letters)[ i ] = ' ';
+			((wchar_t *)*letters)[ i ] = ' ';
 		}
 	} else {
 		*letters = malloc( sizeof(void *) * *maxes );
@@ -72,22 +73,25 @@ void wordsearch_free( word_search_t *ws )
 
 void wordsearch_add( word_search_t *ws, char *new_word )
 {
+	size_t s;
 	ws->word_count ++;
 
 	if( ws->word_count == 1 ) {
-		ws->words = malloc( sizeof( char * ) );
+		ws->words = malloc( sizeof( wchar_t * ) );
 	} else {
-		ws->words = realloc( ws->words, sizeof( char * ) * ws->word_count );
+		ws->words = realloc( ws->words, sizeof( wchar_t * ) * ws->word_count );
 	}
-	ws->words[ ws->word_count - 1 ] = strdup( new_word );
+	s = mbstowcs(NULL, new_word, 0) + 1;
+	ws->words[ ws->word_count - 1 ] = malloc( sizeof(wchar_t) * s );
+	mbstowcs(ws->words[ ws->word_count - 1 ], new_word, s);
 }
 
 static compare( const void *p1, const void *p2 )
 {
-	return strlen(*(char **)p2)-strlen(*(char **)p1);
+	return wcslen(*(wchar_t **)p2)-wcslen(*(wchar_t **)p1);
 }
 
-static int fit_word_score( word_search_t *ws, char *word, position_t *position )
+static int fit_word_score( word_search_t *ws, wchar_t *word, position_t *position )
 {
 	char c;
 	void *index;
@@ -97,7 +101,7 @@ static int fit_word_score( word_search_t *ws, char *word, position_t *position )
 	int offset;
 
 	score = 0;
-	length = strlen(word);
+	length = wcslen(word);
 
 	// Make sure the word fits at all. See if the last letter is on the grid
 	for( i = 0; i < ws->num_dimensions; i ++ ) {
@@ -112,7 +116,7 @@ static int fit_word_score( word_search_t *ws, char *word, position_t *position )
 		for( j = 0; j < ws->num_dimensions - 1; j ++ ) {
 			index = ((void **)index)[ position->pos[ j ] + i * position_dimension_direction( position, j )];
 		}
-		c = ((char *)index)[ position->pos[ j ] + i * position_dimension_direction( position, j )];
+		c = ((wchar_t *)index)[ position->pos[ j ] + i * position_dimension_direction( position, j )];
 
 		if( c == word[i] ) {
 			score ++;
@@ -122,24 +126,24 @@ static int fit_word_score( word_search_t *ws, char *word, position_t *position )
 	}
 }
 
-static void insert_word( word_search_t *ws, char *word, position_t *position )
+static void insert_word( word_search_t *ws, wchar_t *word, position_t *position )
 {
 	void *index;
 	int i, j;
 	int length;
 
-	length = strlen(word);
+	length = wcslen(word);
 
 	for( i = 0; i < length; i ++ ) {
 		index = ws->letters;
 		for( j = 0; j < ws->num_dimensions - 1; j ++ ) {
 			index = ((void **)index)[ position->pos[ j ] + i * position_dimension_direction( position, j )];
 		}
-		((char *)index)[ position->pos[ j ] + i * position_dimension_direction( position, j )] = word[i];
+		((wchar_t *)index)[ position->pos[ j ] + i * position_dimension_direction( position, j )] = word[i];
 	}
 }
 
-bool fit_word( word_search_t *ws, char *word )
+bool fit_word( word_search_t *ws, wchar_t *word )
 {
 	bool fitted = false;
 	int fit, best_fit;
@@ -147,7 +151,7 @@ bool fit_word( word_search_t *ws, char *word )
 	int count;
 	position_t position, best_position;
 
-	length = strlen(word);
+	length = wcslen(word);
 
 	// Start at a random location looking for places to fit the word
 	position_create_random( ws, &position);
@@ -182,7 +186,7 @@ void wordsearch_fit( word_search_t *ws )
 	srand(0);
 
 	// Sort words by length to fit longest first
-	qsort( ws->words, ws->word_count, sizeof(char *), compare );
+	qsort( ws->words, ws->word_count, sizeof(wchar_t *), compare );
 
 	// Fit each word
 	for( i = 0; i < ws->word_count; i ++ ) {
