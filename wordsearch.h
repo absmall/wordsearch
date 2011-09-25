@@ -1,12 +1,14 @@
 #ifndef __WORDSEARCH_H__
 #define __WORDSEARCH_H__
 
+#include <stdlib.h>
+
 typedef struct word_search_t
 {
 	int num_dimensions;
 	int *dimensions;
 	void *letters; 
-	char **words;
+	wchar_t **words;
 	int word_count;
 	int max_directions;
 } word_search_t;

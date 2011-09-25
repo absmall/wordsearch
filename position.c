@@ -11,11 +11,13 @@ void position_create_random( word_search_t *ws, position_t *position )
 	for( i = 0; i < ws->num_dimensions; i ++ ) {
 		position->start_pos[i]
 			= position->pos[i]
-			= rand() % ws->dimensions[ i ];
+			= 0;
+			//= rand() % ws->dimensions[ i ];
 	}
 	position->start_direction
 		= position->direction
-		= rand() % ws->max_directions;
+		= 0;
+		//= rand() % ws->max_directions;
 	position->ws = ws;
 }
 

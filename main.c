@@ -1,4 +1,5 @@
 #include <stdio.h>
+#include <locale.h>
 #include <stdlib.h>
 #include <string.h>
 #include <unistd.h>
@@ -36,6 +37,8 @@ int main(int argc, char *argv[])
 	int c;
 	FILE *f;
 	word_search_t w;
+
+	setlocale(LC_ALL, "");
 
 	// Default to 2 dimensions, 20x20
 	while ((c = getopt(argc, argv, "d:s:h")) != -1) {
