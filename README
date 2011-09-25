@@ -1,0 +1,5 @@
+This program creates and solves word search puzzles in arbitrary number of dimensions.
+
+To create a puzzle, compile the program, and pass a list of words on stdin. By default, the program will use a 20x20 grid, but the size and number of dimensions can be adjusted in main.c
+
+The program will attempt to fit all words it receives from stdin into the puzzle, and will print out the result. It will then attempt to solve the puzzle and print out where it found the start of each word.
