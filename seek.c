@@ -4,7 +4,7 @@
 #include "wordsearch.h"
 #include "position.h"
 
-static bool check_word( word_search *ws, char *word, position_t *position )
+static bool check_word( word_search_t *ws, char *word, position_t *position )
 {
 	char c;
 	void *index;
@@ -37,7 +37,7 @@ static bool check_word( word_search *ws, char *word, position_t *position )
 	return true;
 }
 
-void wordsearch_solve(word_search *ws)
+void wordsearch_solve(word_search_t *ws)
 {
 	position_t pos;
 	int i, j;

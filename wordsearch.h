@@ -1,7 +1,7 @@
 #ifndef __WORDSEARCH_H__
 #define __WORDSEARCH_H__
 
-typedef struct word_search
+typedef struct word_search_t
 {
 	int num_dimensions;
 	int *dimensions;
@@ -9,12 +9,12 @@ typedef struct word_search
 	char **words;
 	int word_count;
 	int max_directions;
-} word_search;
+} word_search_t;
 
-void wordsearch_alloc( word_search *ws, int dimensions, int max);
-void wordsearch_add( word_search *ws, char *new_word);
-void wordsearch_fit( word_search *ws );
-void wordsearch_solve( word_search *ws );
-void wordsearch_free( word_search *ws );
+void wordsearch_alloc( word_search_t *ws, int dimensions, int max);
+void wordsearch_add( word_search_t *ws, char *new_word);
+void wordsearch_fit( word_search_t *ws );
+void wordsearch_solve( word_search_t *ws );
+void wordsearch_free( word_search_t *ws );
 
 #endif /* __WORDSEARCH_H__ */

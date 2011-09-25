@@ -20,7 +20,7 @@ static void letters_alloc(void **letters, int dimensions, int *maxes)
 	}
 }
 
-void wordsearch_alloc( word_search *ws, int dimensions, int max)
+void wordsearch_alloc( word_search_t *ws, int dimensions, int max)
 {
 	int i;
 
@@ -56,7 +56,7 @@ static void letters_free( void *letters, int dimensions, int *maxes)
 	}
 }
 
-void wordsearch_free( word_search *ws )
+void wordsearch_free( word_search_t *ws )
 {
 	int i;
 	letters_free( ws->letters, ws->num_dimensions, ws->dimensions );
@@ -70,7 +70,7 @@ void wordsearch_free( word_search *ws )
 	}
 }
 
-void wordsearch_add( word_search *ws, char *new_word )
+void wordsearch_add( word_search_t *ws, char *new_word )
 {
 	ws->word_count ++;
 
@@ -87,7 +87,7 @@ static compare( const void *p1, const void *p2 )
 	return strlen(*(char **)p2)-strlen(*(char **)p1);
 }
 
-static int fit_word_score( word_search *ws, char *word, position_t *position )
+static int fit_word_score( word_search_t *ws, char *word, position_t *position )
 {
 	char c;
 	void *index;
@@ -122,7 +122,7 @@ static int fit_word_score( word_search *ws, char *word, position_t *position )
 	}
 }
 
-static void insert_word( word_search *ws, char *word, position_t *position )
+static void insert_word( word_search_t *ws, char *word, position_t *position )
 {
 	void *index;
 	int i, j;
@@ -139,7 +139,7 @@ static void insert_word( word_search *ws, char *word, position_t *position )
 	}
 }
 
-bool fit_word( word_search *ws, char *word )
+bool fit_word( word_search_t *ws, char *word )
 {
 	bool fitted = false;
 	int fit, best_fit;
@@ -174,7 +174,7 @@ bool fit_word( word_search *ws, char *word )
 	return fitted;
 }
 
-void wordsearch_fit( word_search *ws )
+void wordsearch_fit( word_search_t *ws )
 {
 	int i;
 

@@ -16,7 +16,7 @@ void usage(char *progname)
 	exit(1);
 }
 
-void read_words(FILE *f, word_search *w)
+void read_words(FILE *f, word_search_t *w)
 {
 	char buf[200];
 
@@ -35,7 +35,7 @@ int main(int argc, char *argv[])
 	int i;
 	int c;
 	FILE *f;
-	word_search w;
+	word_search_t w;
 
 	// Default to 2 dimensions, 20x20
 	while ((c = getopt(argc, argv, "d:s:h")) != -1) {

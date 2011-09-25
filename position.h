@@ -4,15 +4,15 @@
 #include <stdbool.h>
 #include "wordsearch.h"
 
-typedef struct {
+typedef struct position_t {
 	int *start_pos;
 	int start_direction;
 	int *pos;
 	int direction;
-	word_search *ws;
+	word_search_t *ws;
 } position_t;
 
-void position_create_random( word_search *ws, position_t *position );
+void position_create_random( word_search_t *ws, position_t *position );
 bool position_iterate( position_t *position );
 void position_free( position_t *position );
 int position_dimension_direction( position_t *position, int dimension );

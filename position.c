@@ -2,7 +2,7 @@
 #include "wordsearch.h"
 #include "position.h"
 
-void position_create_random( word_search *ws, position_t *position )
+void position_create_random( word_search_t *ws, position_t *position )
 {
 	int i;
 

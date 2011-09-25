@@ -37,7 +37,7 @@ static void display_dimension( void *letters, int dimension, int *dims )
 	}
 }
 
-void wordsearch_display( word_search *ws )
+void wordsearch_display( word_search_t *ws )
 {
 	display_dimension( ws->letters, ws->num_dimensions, ws->dimensions );
 }
