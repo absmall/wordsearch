@@ -124,6 +124,8 @@ static int fit_word_score( word_search_t *ws, wchar_t *word, position_t *positio
 			return -1;
 		}
 	}
+
+	return score;
 }
 
 static void insert_word( word_search_t *ws, wchar_t *word, position_t *position )
@@ -145,10 +147,8 @@ static void insert_word( word_search_t *ws, wchar_t *word, position_t *position 
 
 bool fit_word( word_search_t *ws, wchar_t *word )
 {
-	bool fitted = false;
 	int fit, best_fit;
 	int length;
-	int count;
 	position_t position, best_position;
 
 	length = wcslen(word);
@@ -160,22 +160,25 @@ bool fit_word( word_search_t *ws, wchar_t *word )
 	do {
 		fit = fit_word_score( ws, word, &position );
 		if( fit > best_fit ) {
-			fitted = true;
+			if( best_fit >= 0 ) {
+				position_free( &best_position );
+			}
 			best_fit = fit;
-			best_position = position;
+			position_copy( &best_position, &position );
 			if( best_fit == length ) {
 				break;
 			}
 		}
 	} while(position_iterate( &position ) );
 
-	if( fitted ) {
-		insert_word( ws, word, &position );
+	if( best_fit >= 0 ) {
+		insert_word( ws, word, &best_position );
+		position_free( &best_position );
 	}
 	
 	position_free( &position );
 
-	return fitted;
+	return best_fit >= 0;
 }
 
 void wordsearch_fit( word_search_t *ws )

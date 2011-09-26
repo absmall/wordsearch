@@ -1,4 +1,5 @@
 #include <stdlib.h>
+#include <string.h>
 #include "wordsearch.h"
 #include "position.h"
 
@@ -11,13 +12,11 @@ void position_create_random( word_search_t *ws, position_t *position )
 	for( i = 0; i < ws->num_dimensions; i ++ ) {
 		position->start_pos[i]
 			= position->pos[i]
-			= 0;
-			//= rand() % ws->dimensions[ i ];
+			= rand() % ws->dimensions[ i ];
 	}
 	position->start_direction
 		= position->direction
-		= 0;
-		//= rand() % ws->max_directions;
+		= rand() % ws->max_directions;
 	position->ws = ws;
 }
 
@@ -34,6 +33,18 @@ bool position_iterate( position_t *position )
 	}
 
 	return false;
+}
+
+void position_copy( position_t *dest, position_t *src )
+{
+	int size = sizeof(int) * src->ws->num_dimensions;
+	*dest = *src;
+
+	dest->start_pos = malloc( size );
+	dest->pos = malloc( size );
+
+	memcpy( dest->start_pos, src->start_pos, size );
+	memcpy( dest->pos, src->pos, size );
 }
 
 void position_free( position_t *position )
