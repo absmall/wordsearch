@@ -18,5 +18,6 @@ void wordsearch_add( word_search_t *ws, char *new_word);
 void wordsearch_fit( word_search_t *ws );
 void wordsearch_solve( word_search_t *ws );
 void wordsearch_free( word_search_t *ws );
+void wordsearch_display_stats( word_search_t *ws );
 
 #endif /* __WORDSEARCH_H__ */

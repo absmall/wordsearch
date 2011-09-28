@@ -7,6 +7,7 @@
 
 int dimensions = 2;
 int size = 20;
+int verbose = 0;
 
 void usage(char *progname)
 {
@@ -41,7 +42,7 @@ int main(int argc, char *argv[])
 	setlocale(LC_ALL, "");
 
 	// Default to 2 dimensions, 20x20
-	while ((c = getopt(argc, argv, "d:s:h")) != -1) {
+	while ((c = getopt(argc, argv, "rd:s:hv")) != -1) {
 		switch(c) {
 			case 'd':
 				dimensions = atoi(optarg);
@@ -51,6 +52,9 @@ int main(int argc, char *argv[])
 				break;
 			case 'h':
 				usage(argv[0]);
+				break;
+			case 'v':
+				verbose = 1;
 				break;
 			default:
 				break;
@@ -75,6 +79,9 @@ int main(int argc, char *argv[])
 
 	wordsearch_fit( &w );
 	wordsearch_display( &w );
+	if( verbose ) {
+		wordsearch_display_stats( &w );
+	}
 	wordsearch_solve( &w );
 	wordsearch_free( &w );
 	return 0;
