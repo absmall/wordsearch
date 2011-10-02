@@ -105,5 +105,5 @@ void wordsearch_display_stats( word_search_t *ws )
 
 	wordsearch_gather_stats( ws->letters, ws->num_dimensions, ws->dimensions, &filled, &empty );
 
-	printf("Filled %d, empty %d (Density %0.2g%%)\n\n", filled, empty, 100.0 * filled / (filled + empty));
+	printf("Filled %d, empty %d (Density %0.2f%%)\n\n", filled, empty, 100.0 * filled / (filled + empty));
 }
