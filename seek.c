@@ -9,7 +9,6 @@ static bool check_word( word_search_t *ws, wchar_t *word, position_t *position )
 	wchar_t c;
 	void *index;
 	int i, j, length;
-	int last_pos;
 	int offset;
 
 	length = wcslen(word);
@@ -47,7 +46,7 @@ void wordsearch_solve(word_search_t *ws)
 	for( i = 0; i < ws->word_count; i ++ ) {
 		do {
 			if( check_word( ws, ws->words[i], &pos ) ) {
-				printf("Found '%ls' at (");
+				printf("Found '%ls' at (", ws->words[i]);
 				for(j = 0; j < ws->num_dimensions - 1; j ++ ) {
 					printf("%d,", pos.pos[ j ] );
 				}

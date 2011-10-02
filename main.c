@@ -37,12 +37,13 @@ int main(int argc, char *argv[])
 	int i;
 	int c;
 	FILE *f;
+	char *message = NULL;
 	word_search_t w;
 
 	setlocale(LC_ALL, "");
 
 	// Default to 2 dimensions, 20x20
-	while ((c = getopt(argc, argv, "rd:s:hv")) != -1) {
+	while ((c = getopt(argc, argv, "rd:s:hvm:")) != -1) {
 		switch(c) {
 			case 'd':
 				dimensions = atoi(optarg);
@@ -52,6 +53,9 @@ int main(int argc, char *argv[])
 				break;
 			case 'h':
 				usage(argv[0]);
+				break;
+			case 'm':
+				message = optarg;
 				break;
 			case 'v':
 				verbose = 1;
@@ -77,7 +81,7 @@ int main(int argc, char *argv[])
 		read_words(stdin, &w);
 	}
 
-	wordsearch_fit( &w );
+	wordsearch_fit( &w, message );
 	wordsearch_display( &w );
 	if( verbose ) {
 		wordsearch_display_stats( &w );

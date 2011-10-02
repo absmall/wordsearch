@@ -5,6 +5,11 @@
 #include "wordsearch.h"
 #include "position.h"
 
+typedef struct message_data_t {
+	wchar_t *msg;
+	int index;
+} message_data_t;
+
 static void letters_alloc(void **letters, int dimensions, int *maxes)
 {
 	int i;
@@ -181,9 +186,21 @@ bool fit_word( word_search_t *ws, wchar_t *word )
 	return best_fit >= 0;
 }
 
-void wordsearch_fit( word_search_t *ws )
+static void wordsearch_fill(wchar_t *c, void *data)
+{
+	message_data_t *msg_data = (message_data_t *)data;
+
+	if( *c == ' ' ) {
+		*c = msg_data->msg[ msg_data->index ++ ];
+	}
+}
+
+void wordsearch_fit( word_search_t *ws, char *residue )
 {
 	int i;
+	int length;
+	int filled=0, empty=0;
+	wchar_t *wresidue;
 
 	// We don't need strong randomness, reproducibility is better
 	srand(0);
@@ -194,5 +211,23 @@ void wordsearch_fit( word_search_t *ws )
 	// Fit each word
 	for( i = 0; i < ws->word_count; i ++ ) {
 		fit_word( ws, ws->words[i] );
+	}
+	
+	if( residue != NULL ) {
+		length = mbstowcs( NULL, residue, strlen( residue ) );
+		wresidue = malloc( sizeof( wchar_t ) * (length + 1) );
+		if( wresidue != NULL ) {
+			mbstowcs( wresidue, residue, strlen( residue ) );
+			wordsearch_gather_stats( ws->letters, ws->num_dimensions, ws->dimensions, &filled, &empty );
+			if( length == empty ) {
+				message_data_t data;
+				data.msg = wresidue;
+				data.index = 0;
+				wordsearch_iterate( ws, wordsearch_fill, NULL, NULL, &data );
+			} else {
+				printf("Incorrect message length: length is %d but %d is needed.\n", length, empty);
+			}
+			free( wresidue );
+		}
 	}
 }
