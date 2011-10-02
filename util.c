@@ -2,6 +2,72 @@
 #include <stdlib.h>
 #include "wordsearch.h"
 
+static void letters_alloc(void **letters, int dimensions, int *maxes)
+{
+	int i;
+	if( dimensions == 1 ) {
+		*letters = malloc( sizeof(wchar_t) * *maxes );
+		for( i = 0; i < *maxes; i ++ ) {
+			((wchar_t *)*letters)[ i ] = ' ';
+		}
+	} else {
+		*letters = malloc( sizeof(void *) * *maxes );
+		for( i = 0; i < *maxes; i ++ ) {
+			letters_alloc( ((void **)*letters) + i, dimensions - 1, maxes + 1 );
+		}
+	}
+}
+
+void wordsearch_alloc( word_search_t *ws, int dimensions, int max)
+{
+	int i;
+
+	ws->num_dimensions = dimensions;
+	ws->dimensions = malloc(dimensions * sizeof(int));
+	for(i = 0; i < dimensions; i ++ ) {
+		ws->dimensions[ i ] = max;
+	}
+	letters_alloc(&ws->letters, dimensions, ws->dimensions);
+	ws->word_count = 0;
+
+	// Find the number of possible directions - up, down or no movement in each dimension, but
+	// they can't all be no movement
+	//
+	ws->max_directions = 1;
+	for(i = 0; i < ws->num_dimensions; i ++ ) {
+		ws->max_directions *= 3;
+	}
+	ws->max_directions -= 1;
+}
+
+static void letters_free( void *letters, int dimensions, int *maxes)
+{
+	int i;
+
+	if( dimensions == 1 ) {
+		free( letters );
+	} else {
+		for( i = 0; i < *maxes; i ++ ) {
+			letters_free( ((void **)letters)[ i ], dimensions - 1, maxes + 1 );
+		}
+		free( letters );
+	}
+}
+
+void wordsearch_free( word_search_t *ws )
+{
+	int i;
+	letters_free( ws->letters, ws->num_dimensions, ws->dimensions );
+	free( ws->dimensions );
+
+	for( i = 0; i < ws->word_count; i ++ ) {
+		free( ws->words[i] );
+	}
+	if( ws->word_count != 0 ) {
+		free( ws->words );
+	}
+}
+
 static void wordsearch_iterate_helper( void *letters, int dimension, int *dims, void (*char_callback)(wchar_t *c, void *data), void (*dim_callback_entry)(int dim, void *data), void (*dim_callback_exit)(int dim, void *data), void *data )
 {
 	int i;
