@@ -1,8 +1,9 @@
 #include <stdio.h>
+#include <string.h>
 #include <stdlib.h>
-#include "wordsearch.h"
+#include "wordsearch_internal.h"
 
-static void letters_alloc(void **letters, int dimensions, int *maxes)
+void wordsearch_letters_alloc(void **letters, int dimensions, int *maxes)
 {
 	int i;
 	if( dimensions == 1 ) {
@@ -13,9 +14,34 @@ static void letters_alloc(void **letters, int dimensions, int *maxes)
 	} else {
 		*letters = malloc( sizeof(void *) * *maxes );
 		for( i = 0; i < *maxes; i ++ ) {
-			letters_alloc( ((void **)*letters) + i, dimensions - 1, maxes + 1 );
+			wordsearch_letters_alloc( ((void **)*letters) + i, dimensions - 1, maxes + 1 );
 		}
 	}
+}
+
+static void wordsearch_letters_copy_helper(void **letters, int dimensions, int *maxes, void *old_letters )
+{
+	int i;
+	if( dimensions == 1 ) {
+		*letters = malloc( sizeof(wchar_t) * *maxes );
+		for( i = 0; i < *maxes; i ++ ) {
+			((wchar_t *)*letters)[ i ] = ((wchar_t *)old_letters)[ i ];
+		}
+	} else {
+		*letters = malloc( sizeof(void *) * *maxes );
+		for( i = 0; i < *maxes; i ++ ) {
+			wordsearch_letters_copy_helper( ((void **)*letters) + i, dimensions - 1, maxes + 1, ((void **)old_letters)[ i ] );
+		}
+	}
+}
+
+void wordsearch_copy_letters(word_search_t *dest, word_search_t *src)
+{
+	memset( dest, 0, sizeof(word_search_t) );
+	dest->num_dimensions = src->num_dimensions;
+	dest->dimensions = malloc( sizeof(int) * src->num_dimensions );
+	memcpy( dest->dimensions, src->dimensions, sizeof(int) * src->num_dimensions );
+	wordsearch_letters_copy_helper( &dest->letters, src->num_dimensions, src->dimensions, src->letters );
 }
 
 void wordsearch_alloc( word_search_t *ws, int dimensions, int max)
@@ -27,7 +53,7 @@ void wordsearch_alloc( word_search_t *ws, int dimensions, int max)
 	for(i = 0; i < dimensions; i ++ ) {
 		ws->dimensions[ i ] = max;
 	}
-	letters_alloc(&ws->letters, dimensions, ws->dimensions);
+	wordsearch_letters_alloc(&ws->letters, dimensions, ws->dimensions);
 	ws->word_count = 0;
 
 	// Find the number of possible directions - up, down or no movement in each dimension, but

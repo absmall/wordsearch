@@ -1,6 +1,6 @@
 #include <stdlib.h>
 #include <string.h>
-#include "wordsearch.h"
+#include "wordsearch_internal.h"
 #include "position.h"
 
 void position_create_random( word_search_t *ws, position_t *position )
@@ -53,7 +53,7 @@ void position_free( position_t *position )
 	free( position->start_pos );
 }
 
-int position_dimension_direction( position_t *position, int dimension )
+int position_dimension_direction( const position_t *position, int dimension )
 {
 	int i;
 	int divisor;
