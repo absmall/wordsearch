@@ -1,3 +1,4 @@
+#include <wchar.h>
 #include <stdbool.h>
 #include <stdio.h>
 #include <string.h>
@@ -25,7 +26,7 @@ void wordsearch_add( word_search_t *ws, char *new_word )
 	mbstowcs(ws->words[ ws->word_count - 1 ], new_word, s);
 }
 
-static compare( const void *p1, const void *p2 )
+static int compare( const void *p1, const void *p2 )
 {
 	return wcslen(*(wchar_t **)p2)-wcslen(*(wchar_t **)p1);
 }
@@ -35,7 +36,6 @@ static int fit_word_score( word_search_t *ws, wchar_t *word, position_t *positio
 	wchar_t c;
 	void *index;
 	int i, j, length;
-	int last_pos;
 	int score;
 	int offset;
 
