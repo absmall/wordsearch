@@ -16,7 +16,11 @@ void usage(char *progname)
 	fprintf(stderr, "Usage: %s [options] wordlist\n", progname);
 	fprintf(stderr, "\n");
 	fprintf(stderr, "-d dim\tSpecify the number of dimensions in the puzzle\n");
+	fprintf(stderr, "-g\tFill the unused space with garbage letters\n");
+	fprintf(stderr, "-h\tHelp");
+	fprintf(stderr, "-m message\tMessage to hide in the unused letters\n");
 	fprintf(stderr, "-s size\tSpecify the size of each dimension\n");
+	fprintf(stderr, "-v\tEnable additional prints\n");
 	exit(1);
 }
 
