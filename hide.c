@@ -120,22 +120,9 @@ bool fit_word( word_search_t *ws, wchar_t *word )
 	return best_fit >= 0;
 }
 
-static void wordsearch_fill(wchar_t *c, void *data)
-{
-	message_data_t *msg_data = (message_data_t *)data;
-
-	if( *c == ' ' ) {
-		*c = msg_data->msg[ msg_data->index ++ ];
-	}
-}
-
-bool wordsearch_fit( word_search_t *ws, char *residue )
+void wordsearch_fit( word_search_t *ws )
 {
 	int i;
-	int length;
-	int filled=0, empty=0;
-	wchar_t *wresidue;
-	bool ret = true;
 
 	// We don't need strong randomness, reproducibility is better
 	srand(0);
@@ -147,7 +134,24 @@ bool wordsearch_fit( word_search_t *ws, char *residue )
 	for( i = 0; i < ws->word_count; i ++ ) {
 		fit_word( ws, ws->words[i] );
 	}
-	
+}
+
+static void wordsearch_fill(wchar_t *c, void *data)
+{
+	message_data_t *msg_data = (message_data_t *)data;
+
+	if( *c == ' ' ) {
+		*c = msg_data->msg[ msg_data->index ++ ];
+	}
+}
+
+bool wordsearch_fill_message( word_search_t *ws, char *residue )
+{
+	int length;
+	int filled=0, empty=0;
+	wchar_t *wresidue;
+	bool ret = true;
+
 	if( residue != NULL ) {
 		length = mbstowcs( NULL, residue, strlen( residue ) );
 		wresidue = malloc( sizeof( wchar_t ) * (length + 1) );
@@ -168,4 +172,34 @@ bool wordsearch_fit( word_search_t *ws, char *residue )
 	}
 
 	return ret;
+}
+
+static void fill_garbage(wchar_t *c, void *data)
+{
+	wchar_t w;
+	position_t p;
+
+	word_search_t *ws = (word_search_t *)data;
+	position_create_random( ws, &p );
+
+	if( *c == ' ' ) {
+		w = *position_at( &p );
+		// If we hit an unfilled position, then iterate until we find something
+		while( w == ' ' ) {
+			if( !position_iterate( &p ) ) {
+				// We couldn't find any character? The puzzle is empty!
+				w = rand() % sizeof(wchar_t);
+				break;
+			}
+			w = *position_at( &p );
+		}
+		*c = w;
+	}
+
+	position_free( &p );
+}
+
+void wordsearch_fill_garbage( word_search_t *ws )
+{
+	wordsearch_iterate( ws, fill_garbage, NULL, NULL, ws );
 }

@@ -6,6 +6,7 @@
 #include <unistd.h>
 #include "wordsearch.h"
 
+bool garbage = false;
 int dimensions = 2;
 int size = 20;
 int verbose = 0;
@@ -44,7 +45,7 @@ int main(int argc, char *argv[])
 	setlocale(LC_ALL, "");
 
 	// Default to 2 dimensions, 20x20
-	while ((c = getopt(argc, argv, "rd:s:hvm:")) != -1) {
+	while ((c = getopt(argc, argv, "rd:s:hvm:g")) != -1) {
 		switch(c) {
 			case 'd':
 				dimensions = atoi(optarg);
@@ -56,7 +57,18 @@ int main(int argc, char *argv[])
 				usage(argv[0]);
 				break;
 			case 'm':
+				if( garbage ) {
+					fprintf(stderr, "Only one of -g and -m may be specified\n");
+					exit(1);
+				}
 				message = optarg;
+				break;
+			case 'g':
+				if( message != NULL ) {
+					fprintf(stderr, "Only one of -g and -m may be specified\n");
+					exit(1);
+				}
+				garbage = true;
 				break;
 			case 'v':
 				verbose = 1;
@@ -82,8 +94,14 @@ int main(int argc, char *argv[])
 		read_words(stdin, &w);
 	}
 
-	if( !wordsearch_fit( &w, message ) ) {
-		message = NULL;
+	wordsearch_fit( &w );
+
+	if( message != NULL ) {
+		if( !wordsearch_fill_message( &w, message ) ) {
+			message = NULL;
+		}
+	} else if( garbage ) {
+		wordsearch_fill_garbage( &w );
 	}
 
 	wordsearch_display( &w );

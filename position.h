@@ -14,6 +14,7 @@ typedef struct position_t {
 
 void position_create_random( word_search_t *ws, position_t *position );
 void position_copy( position_t *dest, position_t *src );
+wchar_t *position_at( position_t *position );
 bool position_iterate( position_t *position );
 void position_free( position_t *position );
 int position_dimension_direction( const position_t *position, int dimension );

@@ -35,6 +35,19 @@ bool position_iterate( position_t *position )
 	return false;
 }
 
+wchar_t *position_at( position_t *position )
+{
+	int i;
+	void *index;
+
+	index = position->ws->letters;
+	
+	for( i = 0; i < position->ws->num_dimensions - 1; i ++ ) {
+		index = ((void **)index)[position->pos[i]];
+	}
+	return ((wchar_t *)index) + position->pos[i];
+}
+
 void position_copy( position_t *dest, position_t *src )
 {
 	int size = sizeof(int) * src->ws->num_dimensions;
@@ -73,5 +86,3 @@ int position_dimension_direction( const position_t *position, int dimension )
 		return i;
 	}
 }
-
-
