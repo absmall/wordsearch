@@ -51,13 +51,15 @@ static void erase_word( word_search_t *ws, int length, const position_t *positio
 	}
 }
 
-void wordsearch_solve(word_search_t *ws)
+void wordsearch_solve(word_search_t *ws, int print_message)
 {
 	position_t pos;
 	int i, j;
 	word_search_t seeker;
 
-	wordsearch_copy_letters( &seeker, ws );
+	if( print_message ) {
+		wordsearch_copy_letters( &seeker, ws );
+	}
 	position_create_random( ws, &pos );
 
 	for( i = 0; i < ws->word_count; i ++ ) {
@@ -68,14 +70,20 @@ void wordsearch_solve(word_search_t *ws)
 					printf("%d,", pos.pos[ j ] );
 				}
 				printf("%d)\n", pos.pos[ ws->num_dimensions - 1 ]);
-				erase_word( &seeker, wcslen( ws->words[i] ), &pos );
+				if( print_message ) {
+					erase_word( &seeker, wcslen( ws->words[i] ), &pos );
+				}
 			}
 		} while( position_iterate( &pos ) );
 	}
 
-	printf("Message letters:\n");
-	wordsearch_display( &seeker );
+	if( print_message ) {
+		printf("Message letters:\n");
+		wordsearch_display( &seeker );
+	}
 
-	wordsearch_free( &seeker );
+	if( print_message ) {
+		wordsearch_free( &seeker );
+	}
 	position_free( &pos );
 }

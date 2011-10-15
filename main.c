@@ -87,7 +87,7 @@ int main(int argc, char *argv[])
 	if( verbose ) {
 		wordsearch_display_stats( &w );
 	}
-	wordsearch_solve( &w );
+	wordsearch_solve( &w, message != NULL );
 	wordsearch_free( &w );
 	return 0;
 }
