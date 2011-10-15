@@ -82,7 +82,10 @@ int main(int argc, char *argv[])
 		read_words(stdin, &w);
 	}
 
-	wordsearch_fit( &w, message );
+	if( !wordsearch_fit( &w, message ) ) {
+		message = NULL;
+	}
+
 	wordsearch_display( &w );
 	if( verbose ) {
 		wordsearch_display_stats( &w );

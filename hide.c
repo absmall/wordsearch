@@ -129,12 +129,13 @@ static void wordsearch_fill(wchar_t *c, void *data)
 	}
 }
 
-void wordsearch_fit( word_search_t *ws, char *residue )
+bool wordsearch_fit( word_search_t *ws, char *residue )
 {
 	int i;
 	int length;
 	int filled=0, empty=0;
 	wchar_t *wresidue;
+	bool ret = true;
 
 	// We don't need strong randomness, reproducibility is better
 	srand(0);
@@ -160,8 +161,11 @@ void wordsearch_fit( word_search_t *ws, char *residue )
 				wordsearch_iterate( ws, wordsearch_fill, NULL, NULL, &data );
 			} else {
 				printf("Incorrect message length: length is %d but %d is needed.\n", length, empty);
+				ret = false;
 			}
 			free( wresidue );
 		}
 	}
+
+	return ret;
 }

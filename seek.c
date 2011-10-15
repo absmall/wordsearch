@@ -51,7 +51,7 @@ static void erase_word( word_search_t *ws, int length, const position_t *positio
 	}
 }
 
-void wordsearch_solve(word_search_t *ws, int print_message)
+void wordsearch_solve(word_search_t *ws, bool print_message)
 {
 	position_t pos;
 	int i, j;
