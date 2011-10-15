@@ -22,7 +22,7 @@ void wordsearch_fill_garbage( word_search_t *ws );
 void wordsearch_solve( word_search_t *ws, bool print_message );
 void wordsearch_free( word_search_t *ws );
 void wordsearch_iterate( word_search_t *ws, void (*char_callback)(wchar_t *c, void *data), void (*dim_callback_entry)(int dim, void *data), void (*dim_callback_exit)(int dim, void *data), void *data );
-void wordsearch_display_stats( word_search_t *ws );
+void wordsearch_display( word_search_t *ws );
 void wordsearch_display_stats( word_search_t *ws );
 
 #endif /* __WORDSEARCH_H__ */
