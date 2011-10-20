@@ -7,6 +7,7 @@
 #include "wordsearch.h"
 
 bool garbage = false;
+bool no_fit = false;
 int dimensions = 2;
 int size = 20;
 int verbose = 0;
@@ -20,6 +21,7 @@ void usage(char *progname)
 	fprintf(stderr, "-h\tHelp");
 	fprintf(stderr, "-m message\tMessage to hide in the unused letters\n");
 	fprintf(stderr, "-s size\tSpecify the size of each dimension\n");
+	fprintf(stderr, "-n\tDon't fit words, just fill the grid using a message (useful for import)\n");
 	fprintf(stderr, "-v\tEnable additional prints\n");
 	exit(1);
 }
@@ -49,7 +51,7 @@ int main(int argc, char *argv[])
 	setlocale(LC_ALL, "");
 
 	// Default to 2 dimensions, 20x20
-	while ((c = getopt(argc, argv, "rd:s:hvm:g")) != -1) {
+	while ((c = getopt(argc, argv, "rd:s:hvm:gn")) != -1) {
 		switch(c) {
 			case 'd':
 				dimensions = atoi(optarg);
@@ -77,6 +79,9 @@ int main(int argc, char *argv[])
 			case 'v':
 				verbose = 1;
 				break;
+			case 'n':
+				no_fit = true;
+				break;
 			default:
 				break;
 		}
@@ -98,7 +103,9 @@ int main(int argc, char *argv[])
 		read_words(stdin, &w);
 	}
 
-	wordsearch_fit( &w );
+	if( !no_fit ) {
+		wordsearch_fit( &w );
+	}
 
 	if( message != NULL ) {
 		if( !wordsearch_fill_message( &w, message ) ) {
