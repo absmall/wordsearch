@@ -18,7 +18,7 @@ void usage(char *progname)
 	fprintf(stderr, "\n");
 	fprintf(stderr, "-d dim\tSpecify the number of dimensions in the puzzle\n");
 	fprintf(stderr, "-g\tFill the unused space with garbage letters\n");
-	fprintf(stderr, "-h\tHelp");
+	fprintf(stderr, "-h\tHelp\n");
 	fprintf(stderr, "-m message\tMessage to hide in the unused letters\n");
 	fprintf(stderr, "-s size\tSpecify the size of each dimension\n");
 	fprintf(stderr, "-n\tDon't fit words, just fill the grid using a message (useful for import)\n");
