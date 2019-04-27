@@ -10,6 +10,8 @@ bool garbage = false;
 bool no_fit = false;
 int dimensions = 2;
 int size = 20;
+int variablesizesize;
+int *variablesize = NULL;
 int verbose = 0;
 
 void usage(char *progname)
@@ -20,7 +22,9 @@ void usage(char *progname)
 	fprintf(stderr, "-g\tFill the unused space with garbage letters\n");
 	fprintf(stderr, "-h\tHelp\n");
 	fprintf(stderr, "-m message\tMessage to hide in the unused letters\n");
-	fprintf(stderr, "-s size\tSpecify the size of each dimension\n");
+	fprintf(stderr, "-s size\tSpecify the size of each dimension. This can either be a single integer the size\n");
+  fprintf(stderr, "       \tof each dimension, or a set of integers separated by a single letter x for each\n");
+  fprintf(stderr, "       \tdimension. In this case, the number of parameters must match the dimension.\n");
 	fprintf(stderr, "-n\tDon't fit words, just fill the grid using a message (useful for import)\n");
 	fprintf(stderr, "-v\tEnable additional prints\n");
 	exit(1);
@@ -57,7 +61,40 @@ int main(int argc, char *argv[])
 				dimensions = atoi(optarg);
 				break;
 			case 's':
-				size = atoi(optarg);
+        // Size can be either a single integer which specifies all of the dimensions, or it can
+        // be a series of integers separated by x's to specify all of the dimensions.
+        {
+          const char *nextdim = strchr(optarg, 'x'); 
+          if(nextdim) {
+            // First, count the number of dimensions.
+            variablesizesize = 1;
+            do {
+              nextdim = strchr(nextdim + 1, 'x'); 
+              variablesizesize++;
+            } while(nextdim != NULL);
+            // Allocate the array.
+            variablesize = malloc(sizeof(int) * variablesizesize);
+            // Fill the array.
+            nextdim = optarg;
+            int *cursize = variablesize;
+            *cursize = 0;
+            char *curchar = optarg;
+            while(*curchar) {
+              if(*curchar=='x') {
+                cursize ++;
+                *cursize = 0;
+              } else if(*curchar >= '0' && *curchar <= '9') {
+                *cursize = *cursize * 10 + (*curchar) - '0';
+              } else {
+                fprintf(stderr, "Invalid size argument: %s\n", optarg);
+                usage(argv[0]);
+              }
+              curchar++;
+            }
+          } else {
+            size = atoi(optarg);
+          }
+        }
 				break;
 			case 'h':
 				usage(argv[0]);
@@ -87,7 +124,15 @@ int main(int argc, char *argv[])
 		}
 	}
 
-	wordsearch_alloc( &w, dimensions, size );
+  if(variablesize) {
+    if(variablesizesize != dimensions) {
+      fprintf(stderr, "Number of sizes does not match number of dimensions: %d vs %d\n", variablesizesize, dimensions);
+      usage(argv[0]);
+    }
+    wordsearch_alloc_variable( &w, dimensions, variablesize);
+  } else {
+    wordsearch_alloc( &w, dimensions, size );
+  }
 
 	if( optind < argc ) {
 		for( i = optind; i < argc; i ++ ) {
@@ -121,5 +166,6 @@ int main(int argc, char *argv[])
 	}
 	wordsearch_solve( &w, message != NULL );
 	wordsearch_free( &w );
+  free(variablesize);
 	return 0;
 }

@@ -66,6 +66,28 @@ void wordsearch_alloc( word_search_t *ws, int dimensions, int max)
 	ws->max_directions -= 1;
 }
 
+void wordsearch_alloc_variable( word_search_t *ws, int dimensions, int *max)
+{
+	int i;
+
+	ws->num_dimensions = dimensions;
+	ws->dimensions = malloc(dimensions * sizeof(int));
+	for(i = 0; i < dimensions; i ++ ) {
+		ws->dimensions[ i ] = max[i];
+	}
+	wordsearch_letters_alloc(&ws->letters, dimensions, ws->dimensions);
+	ws->word_count = 0;
+
+	// Find the number of possible directions - up, down or no movement in each dimension, but
+	// they can't all be no movement
+	//
+	ws->max_directions = 1;
+	for(i = 0; i < ws->num_dimensions; i ++ ) {
+		ws->max_directions *= 3;
+	}
+	ws->max_directions -= 1;
+}
+
 static void letters_free( void *letters, int dimensions, int *maxes)
 {
 	int i;

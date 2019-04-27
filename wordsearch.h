@@ -14,7 +14,12 @@ typedef struct word_search_t
 	int max_directions;
 } word_search_t;
 
+// Allocate a wordsearch where each dimension has the same size.
 void wordsearch_alloc( word_search_t *ws, int dimensions, int max);
+
+// Allocate a wordsearch where each dimension has a different size. The size
+// of max must equal the value of dimensions.
+void wordsearch_alloc_variable( word_search_t *ws, int dimensions, int *max);
 void wordsearch_add( word_search_t *ws, char *new_word);
 void wordsearch_fit( word_search_t *ws );
 bool wordsearch_fill_message( word_search_t *ws, char *residue );
